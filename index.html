@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 훈련 - VALORANT Training Planner</title>
+<style>
+  :root{
+    --bg:#0d0e12;
+    --bg2:#15171e;
+    --bg3:#1b1e27;
+    --line:#2a2e3a;
+    --red:#ff4655;
+    --red-dim:#ff465533;
+    --white:#ece8e1;
+    --muted:#8991a3;
+    --green:#2be5a0;
+    --gold:#f0c419;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:transparent;
+    color:var(--white);
+    font-family: 'Segoe UI', system-ui, -apple-system, 'Malgun Gothic', sans-serif;
+    min-height:100vh;
+    padding-bottom:80px;
+  }
+  .bg-image{
+    position:fixed; inset:-30px; z-index:-2;
+    background-image:
+      url('https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg');
+    background-size:cover;
+    background-position:center;
+    filter: blur(14px) brightness(.4) saturate(1.15);
+    transform:scale(1.08);
+  }
+  .bg-overlay{
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(28,33,48,.55) 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, rgba(35,19,27,.55) 0%, transparent 55%),
+      linear-gradient(180deg, rgba(13,14,18,.72) 0%, rgba(13,14,18,.9) 100%);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+  /* PAGE NAV */
+  .page-nav{
+    display:flex; gap:12px; max-width:1080px; margin:0 auto; padding:22px 20px 0; flex-wrap:wrap;
+  }
+  .page-nav-btn{
+    flex:1; min-width:220px; background:rgba(21,23,30,.75); backdrop-filter:blur(6px);
+    border:1px solid var(--line); color:var(--muted); padding:14px 18px; border-radius:8px;
+    font-weight:800; font-size:13px; letter-spacing:.03em; text-transform:uppercase; cursor:pointer;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .page-nav-btn:hover{border-color:#565c6b;}
+  .page-nav-btn.active{border-color:var(--red); color:var(--white); background:#241419;}
+  .page-nav-btn .pn-step{color:var(--red); margin-right:8px;}
+  #navBackBtn{flex:0 0 auto; min-width:auto;}
+
+  /* LANDING SCREEN */
+  .landing-screen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:40px 20px; text-align:center;
+  }
+  .landing-inner{max-width:760px; width:100%;}
+  .landing-inner .eyebrow{display:flex;}
+  .landing-inner .subtitle{color:var(--muted); font-size:16px; line-height:1.6;}
+  .landing-btns{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:12px;
+  }
+  @media (max-width:700px){ .landing-btns{grid-template-columns:1fr;} }
+  .landing-btn{
+    background:rgba(21,23,30,.8); backdrop-filter:blur(6px);
+    border:1px solid var(--line); border-radius:12px; padding:28px 22px;
+    display:flex; flex-direction:column; gap:8px; align-items:flex-start; text-align:left;
+    cursor:pointer; transition:border-color .15s, transform .1s, box-shadow .15s;
+  }
+  .landing-btn:hover{border-color:var(--red); box-shadow:0 0 0 3px var(--red-dim); transform:translateY(-2px);}
+  .landing-btn .lb-step{
+    color:var(--red); font-weight:900; font-size:12px; letter-spacing:.15em; text-transform:uppercase;
+  }
+  .landing-btn .lb-title{font-size:19px; font-weight:800; color:var(--white);}
+  .landing-btn .lb-desc{font-size:13px; color:var(--muted); line-height:1.5;}
+
+  /* HERO */
+  .hero{
+    padding:64px 20px 40px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 46px, #ffffff06 46px 47px);
+    pointer-events:none;
+  }
+  .hero-inner{max-width:1080px;margin:0 auto;position:relative;}
+  .eyebrow{
+    color:var(--red); font-weight:800; letter-spacing:.25em; font-size:12px;
+    text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--red);display:inline-block;}
+  h1.title{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.02;
+    margin:0 0 14px;
+    font-weight:900;
+    letter-spacing:-.01em;
+    text-transform:uppercase;
+    font-stretch:condensed;
+  }
+  h1.title span{color:var(--red);}
+  .subtitle{color:var(--muted); font-size:16px; max-width:620px; line-height:1.6;}
+
+  section{padding:48px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:26px; flex-wrap:wrap;}
+  .sec-num{color:var(--red); font-weight:900; font-size:14px; letter-spacing:.15em;}
+  h2.sec-title{
+    font-size:24px; margin:0; text-transform:uppercase; letter-spacing:.02em; font-weight:800;
+  }
+  .sec-desc{color:var(--muted); font-size:14px; margin:6px 0 0; max-width:640px;}
+
+  /* SETUP GRID */
+  .setup-grid{
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:28px;
+  }
+  @media (max-width: 800px){ .setup-grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:24px;
+  }
+  label.field-label{
+    display:block; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:8px;
+  }
+  input[type=text], select{
+    width:100%; background:var(--bg3); border:1px solid var(--line); color:var(--white);
+    padding:13px 14px; border-radius:6px; font-size:15px; outline:none;
+    transition:border-color .15s;
+  }
+  input[type=text]:focus, select:focus{border-color:var(--red);}
+  .field{margin-bottom:20px;}
+  .hint{font-size:12px; color:var(--muted); margin-top:6px;}
+  .hint.warn{color:var(--red);}
+
+  .badge-preview{
+    display:flex; align-items:center; gap:16px; padding-top:6px;
+  }
+  .badge-svg-wrap{width:76px;height:76px; flex-shrink:0;}
+  .badge-info .b-tier{font-size:18px; font-weight:800; text-transform:uppercase;}
+  .badge-info .b-div{font-size:12px; color:var(--muted); letter-spacing:.1em;}
+
+  .vs-arrow{
+    display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:22px;
+  }
+
+  .btn{
+    background:var(--red); color:#fff; border:none; padding:14px 26px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; font-size:14px; border-radius:6px; cursor:pointer;
+    width:100%; margin-top:6px; transition:transform .1s, box-shadow .15s;
+  }
+  .btn:hover{box-shadow:0 0 0 3px var(--red-dim);}
+  .btn:active{transform:scale(0.99);}
+  .btn:disabled{background:#3a3d47; cursor:not-allowed; color:var(--muted);}
+
+  .gap-readout{
+    margin-top:18px; padding:14px 16px; background:var(--bg3); border-radius:8px;
+    border:1px dashed var(--line); font-size:13px; color:var(--muted); display:none;
+  }
+  .gap-readout b{color:var(--white);}
+
+  /* ROUTINES */
+  #routines-out{display:none;}
+  .routine-block{margin-bottom:36px;}
+  .routine-head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .routine-idx{
+    width:30px; height:30px; border:1px solid var(--red); color:var(--red); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0;
+  }
+  .routine-title{font-size:18px; font-weight:800;}
+  .routine-focus{font-size:13px; color:var(--muted); margin-left:42px; margin-top:-10px; margin-bottom:16px;}
+
+  .diff-stack{display:flex; flex-direction:column; gap:12px;}
+  .diff-card{
+    background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:18px 20px;
+    display:grid; grid-template-columns: 140px 1fr 170px; gap:18px; align-items:center;
+  }
+  @media (max-width:720px){ .diff-card{grid-template-columns:1fr; text-align:left;} }
+  .diff-card.light{border-left:4px solid #6fd6ff;}
+  .diff-card.medium{border-left:4px solid var(--gold);}
+  .diff-card.hard{border-left:4px solid var(--red);}
+  .diff-name{font-weight:800; text-transform:uppercase; font-size:14px; letter-spacing:.04em;}
+  .diff-name small{display:block; color:var(--muted); font-weight:500; font-size:11px; letter-spacing:0; margin-top:2px;}
+  .diff-tasks{font-size:13px; color:#c9cdd6; line-height:1.65;}
+  .diff-tasks li{margin-bottom:2px;}
+  .diff-stats{text-align:right;}
+  @media (max-width:720px){ .diff-stats{text-align:left; margin-top:6px;} }
+  .diff-stats .est{font-size:19px; font-weight:900; color:var(--white);}
+  .diff-stats .persess{font-size:12px; color:var(--muted); margin-top:2px;}
+
+  /* MAP FINDER */
+  .map-grid{display:grid; grid-template-columns: 260px 1fr; gap:28px;}
+  @media (max-width:800px){ .map-grid{grid-template-columns:1fr;} }
+  .map-btn{
+    display:block; width:100%; text-align:left; background:var(--bg2); border:1px solid var(--line);
+    color:var(--white); padding:13px 16px; border-radius:8px; margin-bottom:8px; cursor:pointer;
+    font-size:14px; font-weight:700; transition:border-color .15s, background .15s;
+  }
+  .map-btn:hover{border-color:var(--muted);}
+  .map-btn.active{border-color:var(--red); background:#241419; color:var(--red);}
+
+  .comp-panel{background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:24px;}
+  .comp-title{font-size:20px; font-weight:900; text-transform:uppercase; margin-bottom:4px;}
+  .comp-sub{color:var(--muted); font-size:13px; margin-bottom:20px;}
+  .comp-tip{
+    font-size:12px;
+    color:var(--muted);
+    margin:8px 0 14px;
+    padding-left:10px;
+    border-left:3px solid var(--red);
+    line-height:1.5;
+}
+  .agent-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;}
+  .agent-chip{
+    background:var(--bg3); border:1px solid var(--line); border-radius:8px; padding:8px 14px 8px 8px;
+    display:flex; align-items:center; gap:10px; min-width:150px;
+  }
+  .agent-icon{width:38px; height:38px; border-radius:6px; object-fit:cover; background:#0d0e12; flex-shrink:0;}
+  .agent-dot{width:10px;height:10px;border-radius:50%; flex-shrink:0;}
+  .agent-name{font-weight:800; font-size:14px;}
+  .agent-role{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+
+  .tl-agent-chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--bg2); border:1px solid var(--line);
+    border-radius:20px; padding:3px 10px 3px 3px; margin:2px 4px 2px 0; font-size:12.5px; font-weight:700;
+  }
+  .tl-agent-chip img{width:22px; height:22px; border-radius:50%; object-fit:cover; background:#0d0e12;}
+
+  .map-thumb{width:56px; height:32px; object-fit:cover; border-radius:4px; margin-right:10px; vertical-align:middle; background:#0d0e12;}
+  .map-btn-inner{display:flex; align-items:center;}
+  .map-splash{width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:16px; display:block;}
+
+  .tierlist{display:flex; flex-direction:column; gap:8px;}
+  .tl-row{display:flex; align-items:stretch; border-radius:8px; overflow:hidden; border:1px solid var(--line);}
+  .tl-tag{
+    width:56px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:16px;
+  }
+  .tl-tag.S{background:#07b0f3; color:#1a1a1a;}
+  .tl-tag.A{background:#15aa01; color:#1a1a1a;}
+  .tl-tag.B{background:#7c6b0c; color:#1a1a1a;}
+  .tl-agents{background:var(--bg3); flex:1; padding:10px 14px; font-size:13px; color:#d8dbe2;}
+  .tl-agents b{color:var(--white);}
+
+  .disclaimer{
+    font-size:11.5px; color:var(--muted); margin-top:18px; line-height:1.6; border-top:1px dashed var(--line); padding-top:14px;
+  }
+
+  footer.foot{text-align:center; color:var(--muted); font-size:12px; padding:40px 0 0;}
+</style>
+</head>
+<body>
+
+<div class="bg-image"></div>
+<div class="bg-overlay"></div>
+
+<div class="landing-screen" id="landingScreen">
+  <div class="landing-inner">
+    <div class="eyebrow" style="justify-content:center;">Rank-up Aim Lab</div>
+    <h1 class="title">오늘의 <span>훈련</span></h1>
+    <p class="subtitle" style="margin:0 auto 40px;">현재 티어와 목표 티어를 입력하면 목표까지 도달할 수 있는 에임 루틴 3가지를 난이도별로 짜드립니다.
+    맵을 고르면 최근 메타 기준 추천 조합과 요원 티어 리스트도 바로 확인하세요.</p>
+    <div class="landing-btns">
+      <button class="landing-btn" id="landingBtn1" data-page="1">
+        <span class="lb-step">STEP 1</span>
+        <span class="lb-title">에임 루틴 추천 받기</span>
+        <span class="lb-desc">현재/목표 티어를 입력하고 맞춤 에임 루틴을 받아보세요</span>
+      </button>
+      <button class="landing-btn" id="landingBtn2" data-page="2">
+        <span class="lb-step">STEP 2</span>
+        <span class="lb-title">맵별 추천 조합 &amp; 요원 티어 리스트</span>
+        <span class="lb-desc">맵을 선택하면 추천 조합과 요원 티어를 보여드려요</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="hero" id="hero" style="display:none;">
+  <div class="hero-inner">
+    <div class="eyebrow">Rank-up Aim Lab</div>
+    <h1 class="title">오늘의 <span>훈련</span></h1>
+    <p class="subtitle">현재 티어와 목표 티어를 입력하면 목표까지 도달할 수 있는 에임 루틴 3가지를 난이도별로 짜드립니다.
+    맵을 고르면 최근 메타 기준 추천 조합과 요원 티어 리스트도 바로 확인하세요.</p>
+  </div>
+</div>
+
+<div class="page-nav" id="pageNav" style="display:none;">
+  <button class="page-nav-btn" id="navBackBtn">처음으로</button>
+  <button class="page-nav-btn active" id="navBtn1" data-page="1"><span class="pn-step">STEP 1</span>에임 루틴 추천 받기</button>
+  <button class="page-nav-btn" id="navBtn2" data-page="2"><span class="pn-step">STEP 2</span>맵별 추천 조합 &amp; 요원 티어 리스트</button>
+</div>
+
+<div class="wrap" id="wrap" style="display:none;">
+
+<div class="page" id="page-1">
+  <!-- SECTION 1+2: TIER INPUT & ROUTINES -->
+  <section id="setup-section">
+    <div class="sec-head">
+      <span class="sec-num">📌</span>
+      <h2 class="sec-title">에임 루틴 추천 받기</h2>
+    </div>
+    <p class="sec-desc">티어를 입력하면 우측에 해당 티어 뱃지가 표시됩니다. 목표 티어는 현재 티어보다 낮게 설정할 수 없습니다.</p>
+
+    <div class="setup-grid">
+      <div class="card">
+        <div class="field">
+          <label class="field-label" for="currentTierInput">현재 티어 (예: 골드 2, 다이아 3, 레디언트)</label>
+          <input type="text" id="currentTierInput" list="tierDatalist" placeholder="티어를 입력하세요">
+          <datalist id="tierDatalist"></datalist>
+          <div class="hint" id="currentHint">&nbsp;</div>
+        </div>
+        <div class="badge-preview">
+          <div class="badge-svg-wrap" id="currentBadgeWrap"></div>
+          <div class="badge-info">
+            <div class="b-tier" id="currentBadgeName">티어를 입력해주세요</div>
+            <div class="b-div" id="currentBadgeDiv"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label class="field-label" for="targetTierSelect">목표 티어</label>
+          <select id="targetTierSelect" disabled>
+            <option>먼저 현재 티어를 입력하세요</option>
+          </select>
+          <div class="hint" id="targetHint">&nbsp;</div>
+        </div>
+        <div class="badge-preview">
+          <div class="badge-svg-wrap" id="targetBadgeWrap"></div>
+          <div class="badge-info">
+            <div class="b-tier" id="targetBadgeName">목표 티어 선택 대기중</div>
+            <div class="b-div" id="targetBadgeDiv"></div>
+          </div>
+        </div>
+        <button class="btn" id="generateBtn" disabled>에임 루틴 생성하기</button>
+        <div class="gap-readout" id="gapReadout"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="routines-section">
+    <div class="sec-head">
+      <span class="sec-num">📝</span>
+      <h2 class="sec-title">추천 에임 루틴 3종</h2>
+    </div>
+    <p class="sec-desc" id="routines-desc">위에서 티어를 입력하고 루틴을 생성하면 난이도별(라이트 · 미드 · 하드) 소요 시간과 목표 티어 도달 예상 기간이 계산되어 표시됩니다.</p>
+    <div id="routines-out"></div>
+  </section>
+
+</div>
+
+<div class="page" id="page-2" style="display:none;">
+  <!-- SECTION 3: MAP / COMP FINDER -->
+  <section id="map-section">
+    <div class="sec-head">
+      <span class="sec-num">🗺️</span>
+      <h2 class="sec-title">맵별 추천 조합 &amp; 요원 티어 리스트</h2>
+    </div>
+    <p class="sec-desc">맵을 선택하면 최근 메타 기준 추천 5인 조합과 해당 맵에서 강력한 요원 티어 리스트를 보여줍니다. (V26 A4)</p>
+
+    <div class="map-grid">
+      <div id="mapButtons"></div>
+      <div class="comp-panel" id="compPanel"></div>
+    </div>
+  </section>
+</div>
+<section id="contact-section">
+  <div class="sec-head">
+    <span class="sec-num">⭐</span>
+    <h2 class="sec-title">Bug Report & Developer</h2>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-item">
+      <div class="contact-title">🐞 버그 제보</div>
+      <div class="contact-text">
+        사이트 이용 중 버그나 오류를 발견했다면 아래 연락처로 제보해주세요!
+      </div>
+      <div class="contact-dc">
+        Discord : zxnian_1009
+      </div>
+      <div class="contact-ig">
+        Instagram : _szxyl.12
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="contact-title">👨‍💻 개발</div>
+      <div class="contact-text">
+        VALORANT Aim Training Planner를 개발했습니다.<br>
+        피드백과 개선 사항은 언제든 환영합니다.<br>
+        Helped by Claude
+      </div>
+      <div class="contact-link">
+        Made by 可望而不可及#還是愛你
+      </div>
+    </div>
+  </div>
+</section>
+  <footer class="foot">오늘의 훈련 · 요원 티어 리스트는 2026년 7월 메타 데이터 기준입니다.<br>v26.7.24</footer>
+</div>
+
+<script>
+/* ============ RIOT PUBLIC DATA API ASSETS ============ */
+// 공식 Riot 개발자용 공개 데이터 API(media.valorant-api.com)의 이미지를 그대로 참조합니다.
+const TIER_SET_UUID = '03621f52-342b-cf4e-4f86-9350a49c6d04';
+function tierRankNumber(tierIdx, div){
+  if(tierIdx === 8) return 27; // 레디언트
+  return 3 + tierIdx*3 + ((div||1)-1);
+}
+function tierImgUrl(tierIdx, div){
+  return `https://media.valorant-api.com/competitivetiers/${TIER_SET_UUID}/${tierRankNumber(tierIdx,div)}/largeicon.png`;
+}
+
+const AGENT_UUID = {
+  '게코':'e370fa57-4757-3604-3648-499e1f642d3f', '페이드':'dade69b4-4f5a-8528-247b-219e5a1facd6',
+  '브리치':'5f8d3a7f-467b-97f3-062c-13acf203c006', '데드록':'cc8b64c8-4b25-4ff9-6e7f-37b4da43d235',
+  '테호':'b444168c-4e35-8076-db47-ef9bf368f384', '레이즈':'f94c3b30-42be-e959-889c-5aa313dba261',
+  '체임버':'22697a3d-45bf-8dd7-4fec-84a9e28c69d7', '케이/오':'601dbbe7-43ce-be57-2a40-4abd24953621',
+  '스카이':'6f2a04ca-43e0-be17-7f36-b3908627744d', '사이퍼':'117ed9e3-49f3-6512-3ccf-0cada7e3823b',
+  '소바':'320b2a48-4d9b-a075-30f1-1f93a9b638fa', '믹스':'7c8a4701-4de6-9355-b254-e09bc2a34b72',
+  '킬조이':'1e58de9c-4950-5125-93e9-a0aee9f98746', '하버':'95b78ed7-4637-86d9-7e41-71ba8c293152',
+  '바이스':'efba5359-4016-a1e5-7626-b1ae76895940', '바이퍼':'707eab51-4836-f488-046a-cda6bf494859',
+  '피닉스':'eb93336a-449b-9c1b-0a54-a891f7921d69', '비토':'92eeef5d-43b5-1d4a-8d03-b3927a09034b',
+  '아스트라':'41fb69c1-4189-7b37-f117-bcaf1e96f1bf', '브림스톤':'9f0d8ba9-4140-b941-57d3-a7ad57c6b417',
+  '아이소':'0e38b510-41a8-5780-5e8f-568b2a4f2d6c', '클로브':'1dbf2edd-4729-0984-3115-daa5eed44993',
+  '네온':'bb2a4828-46eb-8cd1-e765-15848195d751', '요루':'7f94d92c-4234-0a36-9646-3a87eb8b5c89',
+  '웨이레이':'df1cb487-4902-002e-5c17-d28e83e78588', '세이지':'569fdd95-4d10-43ab-ca70-79becc718b46',
+  '레이나':'a3bfb853-43b2-7238-a4f1-ad90e9e46bcc', '오멘':'8e253930-4c05-31dd-1b6c-968525494517',
+  '제트':'add6443a-41bd-e414-f6ad-e58d267f4e95'
+};
+function agentIconUrl(name){
+  const id = AGENT_UUID[name];
+  return id ? `https://media.valorant-api.com/agents/${id}/displayicon.png` : '';
+}
+
+const MAP_UUID = {
+  '스플릿':'d960549e-485c-e861-8d71-aa9d1aed12a2',
+  '바인드':'2c9d57ec-4431-9c5e-2939-8f9ef6dd5cba',
+  '헤이븐':'2bee0dc9-4ffe-519b-1cbd-7fbe763a6047',
+  '어센트':'7eaecc1b-4337-bbf6-6ab9-04b8f06b3319',
+  '아이스박스':'e2ad5c54-4114-a870-9641-8ea21279579a',
+  '브리즈':'2fb9a4fd-47b8-4e7d-a969-74b4046ebd53',
+  '프랙처':'b529448b-4d60-346e-e89e-00a4c527a405',
+  '펄':'fd267378-4d1d-484f-ff52-77821ed10dc2',
+  '로터스':'2fe4ed3a-450a-948b-6d6b-e89a78e680a9',
+  '선셋':'92584fbe-486a-b1b2-9faa-39b0f486b498',
+  '어비스':'224b0a95-48b9-f703-1bd8-67aca101a61f',
+  '코로드':'1c18ab1f-420d-0d8b-71d0-77ad3c439115',
+  '서밋':'756da597-416b-c0f2-f47b-afbdf28670bc'
+  
+
+  
+};
+function mapThumbUrl(name){
+  const id = MAP_UUID[name];
+  return id ? `https://media.valorant-api.com/maps/${id}/listviewicon.png` : '';
+}
+function mapSplashUrl(name){
+  const id = MAP_UUID[name];
+  return id ? `https://media.valorant-api.com/maps/${id}/splash.png` : '';
+}
+
+/* ============ TIER DATA ============ */
+const TIERS = [
+  {name:'아이언',   aliases:['아이언','iron'],           divisions:3, color:'#4a4a4a', accent:'#6b6b6b'},
+  {name:'브론즈',   aliases:['브론즈','bronze'],          divisions:3, color:'#8a5a3c', accent:'#c08a5c'},
+  {name:'실버',     aliases:['실버','silver'],            divisions:3, color:'#8a97a3', accent:'#c7d0d6'},
+  {name:'골드',     aliases:['골드','gold'],              divisions:3, color:'#c99a1c', accent:'#f0c419'},
+  {name:'플래티넘', aliases:['플래티넘','플래','platinum','plat'], divisions:3, color:'#1f9e8e', accent:'#4fd6c4'},
+  {name:'다이아몬드', aliases:['다이아몬드','다이아','diamond','dia'], divisions:3, color:'#9b6bd6', accent:'#c49aec'},
+  {name:'초월자',   aliases:['초월자','초월','어센던트','ascendant'], divisions:3, color:'#3fae5c', accent:'#6fdc8c'},
+  {name:'불멸',     aliases:['불멸','이모탈','immortal'], divisions:3, color:'#b3324f', accent:'#e0546f'},
+  {name:'레디언트', aliases:['레디언트','radiant'],        divisions:1, color:'#e8d24c', accent:'#fff7b0'}
+];
+
+// flatten into steps
+const STEPS = [];
+TIERS.forEach((t, ti)=>{
+  for(let d=1; d<=t.divisions; d++){
+    STEPS.push({
+      tierIdx: ti, tierName:t.name, div: t.divisions>1 ? d : null,
+      color:t.color, accent:t.accent,
+      label: t.divisions>1 ? `${t.name} ${d}` : t.name,
+      img: tierImgUrl(ti, d)
+    });
+  }
+});
+
+// populate datalist
+const datalistEl = document.getElementById('tierDatalist');
+STEPS.forEach(s=>{
+  const opt = document.createElement('option');
+  opt.value = s.label;
+  datalistEl.appendChild(opt);
+});
+
+/* ============ PARSE INPUT -> STEP INDEX ============ */
+function normalize(str){ return str.trim().toLowerCase().replace(/\s+/g,' '); }
+
+function findStepIndex(raw){
+  if(!raw) return -1;
+  const q = normalize(raw);
+  // exact label match first
+  let idx = STEPS.findIndex(s=> normalize(s.label) === q);
+  if(idx !== -1) return idx;
+
+  // try alias + optional division number
+  const numMatch = q.match(/([1-3])\s*$/);
+  const div = numMatch ? parseInt(numMatch[1]) : null;
+  const textPart = numMatch ? q.slice(0, numMatch.index).trim() : q;
+
+  for(let ti=0; ti<TIERS.length; ti++){
+    const t = TIERS[ti];
+    if(t.aliases.some(a=> textPart === a || textPart.startsWith(a))){
+      const useDiv = t.divisions>1 ? (div && div>=1 && div<=t.divisions ? div : 1) : null;
+      return STEPS.findIndex(s=> s.tierName===t.name && s.div===useDiv);
+    }
+  }
+  return -1;
+}
+
+/* ============ BADGE (실제 Riot 랭크 아이콘) ============ */
+function badgeSVG(step, size=76){
+  if(!step){
+    return `<img
+      src="https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png"
+      width="${size}"
+      height="${size}"
+      style="object-fit:contain; filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));"
+      alt="Unrated">`;
+  }
+
+  return `<img
+      src="${step.img}"
+      width="${size}"
+      height="${size}"
+      style="object-fit:contain; filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));"
+      alt="${step.label}">`;
+}
+
+/* ============ UI WIRING ============ */
+const currentInput = document.getElementById('currentTierInput');
+const currentHint = document.getElementById('currentHint');
+const currentBadgeWrap = document.getElementById('currentBadgeWrap');
+const currentBadgeName = document.getElementById('currentBadgeName');
+const currentBadgeDiv = document.getElementById('currentBadgeDiv');
+
+const targetSelect = document.getElementById('targetTierSelect');
+const targetHint = document.getElementById('targetHint');
+const targetBadgeWrap = document.getElementById('targetBadgeWrap');
+const targetBadgeName = document.getElementById('targetBadgeName');
+const targetBadgeDiv = document.getElementById('targetBadgeDiv');
+
+const generateBtn = document.getElementById('generateBtn');
+const gapReadout = document.getElementById('gapReadout');
+
+currentBadgeWrap.innerHTML = badgeSVG(null);
+targetBadgeWrap.innerHTML = badgeSVG(null);
+
+let currentIdx = -1;
+let targetIdx = -1;
+
+currentInput.addEventListener('input', ()=>{
+  const idx = findStepIndex(currentInput.value);
+  currentIdx = idx;
+  if(idx === -1){
+    currentBadgeWrap.innerHTML = badgeSVG(null);
+    currentBadgeName.textContent = currentInput.value.trim() ? '인식할 수 없는 티어예요' : '티어를 입력해주세요';
+    currentBadgeDiv.textContent = '';
+    currentHint.textContent = currentInput.value.trim() ? '예시처럼 입력해보세요: 골드 2, 다이아 3, 레디언트' : '\u00A0';
+    currentHint.className = 'hint ' + (currentInput.value.trim() ? 'warn' : '');
+    targetSelect.innerHTML = '<option>먼저 현재 티어를 입력하세요</option>';
+    targetSelect.disabled = true;
+    targetIdx = -1;
+    updateTargetBadge();
+    checkReady();
+    return;
+  }
+  const step = STEPS[idx];
+  currentBadgeWrap.innerHTML = badgeSVG(step);
+  currentBadgeName.textContent = step.tierName;
+  currentBadgeDiv.textContent = step.div ? `${step.div} 구간` : '최상위 티어';
+  currentHint.textContent = '\u00A0';
+  currentHint.className = 'hint';
+
+  // populate target select: only steps ABOVE current
+  targetSelect.innerHTML = '';
+  const higherSteps = STEPS.filter((s,i)=> i>idx);
+  if(higherSteps.length===0){
+    targetSelect.innerHTML = '<option>이미 최고 티어입니다!</option>';
+    targetSelect.disabled = true;
+  } else {
+    targetSelect.disabled = false;
+    const placeholder = document.createElement('option');
+    placeholder.textContent = '목표 티어를 선택하세요';
+    placeholder.value = '';
+    targetSelect.appendChild(placeholder);
+    STEPS.forEach((s,i)=>{
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = s.label + (i<=idx ? ' (선택 불가: 현재 티어 이하)' : '');
+      opt.disabled = i<=idx;
+      targetSelect.appendChild(opt);
+    });
+  }
+  targetHint.textContent = '현재 티어보다 낮은 티어는 선택할 수 없습니다.';
+  targetHint.className = 'hint';
+  targetIdx = -1;
+  updateTargetBadge();
+  checkReady();
+});
+
+targetSelect.addEventListener('change', ()=>{
+  const v = targetSelect.value;
+  targetIdx = (v==='' || isNaN(parseInt(v))) ? -1 : parseInt(v);
+  updateTargetBadge();
+  checkReady();
+});
+
+function updateTargetBadge(){
+  if(targetIdx===-1){
+    targetBadgeWrap.innerHTML = badgeSVG(null);
+    targetBadgeName.textContent = '목표 티어 선택 대기중';
+    targetBadgeDiv.textContent = '';
+    gapReadout.style.display = 'none';
+    return;
+  }
+  const step = STEPS[targetIdx];
+  targetBadgeWrap.innerHTML = badgeSVG(step);
+  targetBadgeName.textContent = step.tierName;
+  targetBadgeDiv.textContent = step.div ? `${step.div} 구간` : '최상위 티어';
+
+  const gap = targetIdx - currentIdx;
+  gapReadout.style.display = 'block';
+  gapReadout.innerHTML = `현재 <b>${STEPS[currentIdx].label}</b> → 목표 <b>${step.label}</b> · 총 <b>${gap}</b> 구간 상승 필요`;
+}
+
+function checkReady(){
+  generateBtn.disabled = !(currentIdx!==-1 && targetIdx!==-1 && targetIdx>currentIdx);
+}
+
+/* ============ ROUTINE GENERATION ============ */
+const ROUTINE_DEFS = [
+  {
+    name:'플릭 &amp; 정확도 루틴',
+    focus:'순간적으로 각을 맞추는 플릭샷과 헤드샷 정확도에 집중합니다. 듀얼리스트/오퍼레이터 유저 추천.',
+    mult:1.0,
+    tasks:{
+      light:['연습장(Shooting Range) 봇 사격 5분 웜업', 'Aim Lab · Gridshot 3세트', '데스매치 1판 (헤드샷 위주)'],
+      medium:['연습장 웜업 10분', 'Aim Lab · Gridshot + Strafe Track 5세트', '연습장 스파이더샷 15분', '데스매치 2판'],
+      hard:['연습장 웜업 15분', 'Kovaak 스타일 1-wall 6target 6세트', 'Aim Lab Precise 시나리오 20분', '데스매치 3판 + 리플레이 분석 10분']
+    }
+  },
+  {
+    name:'트래킹 &amp; 리코일 컨트롤 루틴',
+    focus:'움직이는 적을 따라가는 트래킹과 연사 시 탄퍼짐 제어를 훈련합니다. 라이플 교전이 잦은 랭크에 효과적.',
+    mult:0.95,
+    tasks:{
+      light:['연습장 무빙 타겟 트래킹 5분', 'Aim Lab · Strafe Track 3세트', '벽 대고 리코일 패턴 연습 5분'],
+      medium:['연습장 트래킹 10분', 'Aim Lab · Detection Track 5세트', '리코일 스프레이 연습 10분', '데스매치 2판'],
+      hard:['연습장 트래킹 15분', 'Kovaak 스타일 Smooth Tracking 6세트', '풀오토 스프레이 정밀 훈련 15분', '데스매치 3판 + 감도 미세조정 점검']
+    }
+  },
+  {
+    name:'종합 반응속도 &amp; 클러치 루틴',
+    focus:'플릭, 트래킹, 스위칭, 판단력을 한 번에 묶은 종합 루틴. 랭크 클러치 상황 대비에 특화.',
+    mult:1.05,
+    tasks:{
+      light:['연습장 웜업 5분', 'Aim Lab · 6 Sphere Switch 3세트', '커스텀 게임 1대1 아레나 5분'],
+      medium:['연습장 웜업 10분', 'Aim Lab · Multi-target Switch 5세트', '커스텀 1대1 아레나 15분', '데스매치 1판'],
+      hard:['연습장 웜업 15분', 'Kovaak 스타일 Switching + Reaction 6세트', '커스텀 1대1 아레나 20분', '경쟁전 워밍업 1판 + 클러치 상황 리뷰']
+    }
+  }
+];
+
+const DIFF_DEFS = [
+  {key:'light', label:'라이트', session:25, daysPerStep:6},
+  {key:'medium', label:'미드', session:45, daysPerStep:4},
+  {key:'hard', label:'하드', session:75, daysPerStep:2.5}
+];
+
+function formatPeriod(days){
+  if(days < 14) return `약 ${days}일`;
+  const weeks = Math.round(days/7);
+  const months = (days/30).toFixed(1);
+  if(days < 60) return `약 ${weeks}주`;
+  return `약 ${weeks}주 (약 ${months}개월)`;
+}
+
+generateBtn.addEventListener('click', ()=>{
+  const gap = targetIdx - currentIdx;
+  const out = document.getElementById('routines-out');
+  document.getElementById('routines-desc').textContent =
+    `${STEPS[currentIdx].label} → ${STEPS[targetIdx].label} (${gap}구간) 기준으로 AI가 계산한 추천 루틴입니다. 난이도가 올라갈수록 훈련량이 늘어나는 대신 목표 도달 기간이 짧아집니다.`;
+
+  out.innerHTML = '';
+  ROUTINE_DEFS.forEach((r, ri)=>{
+    const block = document.createElement('div');
+    block.className = 'routine-block';
+
+    const head = document.createElement('div');
+    head.className = 'routine-head';
+    head.innerHTML = `<div class="routine-idx">${ri+1}</div><div class="routine-title">${r.name}</div>`;
+    block.appendChild(head);
+
+    const focus = document.createElement('div');
+    focus.className = 'routine-focus';
+    focus.textContent = r.focus;
+    block.appendChild(focus);
+
+    const stack = document.createElement('div');
+    stack.className = 'diff-stack';
+
+    DIFF_DEFS.forEach(d=>{
+      const totalDays = Math.max(5, Math.round(gap * d.daysPerStep * r.mult));
+      const card = document.createElement('div');
+      card.className = `diff-card ${d.key}`;
+      const tasksHTML = r.tasks[d.key].map(t=>`<li>${t}</li>`).join('');
+      card.innerHTML = `
+        <div class="diff-name">${d.label}<small>1회 약 ${d.session}분</small></div>
+        <ul class="diff-tasks">${tasksHTML}</ul>
+        <div class="diff-stats">
+          <div class="est">${formatPeriod(totalDays)}</div>
+          <div class="persess">목표 티어 도달 예상</div>
+        </div>
+      `;
+      stack.appendChild(card);
+    });
+
+    block.appendChild(stack);
+    out.appendChild(block);
+  });
+
+  out.style.display = 'block';
+  out.scrollIntoView({behavior:'smooth', block:'nearest'});
+});
+
+/* ============ MAP / COMP DATA ============ */
+// 2026년 7월 메타 기준 (요원 전역 티어: S/A/B 표기는 win-rate 기반 일반 데이터를 참고해 맵 특성에 맞게 재구성한 가이드입니다)
+
+const ROLE_ICON = {
+  "타격대": "https://media.valorant-api.com/agents/roles/dbe8757e-9e92-4ed4-b39f-9dfc589691d4/displayicon.png",
+  "척후대": "https://media.valorant-api.com/agents/roles/1b47567f-8f7b-444b-aae3-b0c634622d10/displayicon.png",
+  "감시자": "https://media.valorant-api.com/agents/roles/5fc02f99-4091-4486-a531-98459a3e95e9/displayicon.png",
+  "전략가": "https://media.valorant-api.com/agents/roles/4ee40330-ecdd-4f2f-98a8-eb1243428373/displayicon.png"
+};
+
+const MAPS = {
+  '헤이븐': {
+    comp:[
+      {name:'네온', role:'타격대'}, {name:'피닉스', role:'타격대'},
+      {name:'클로브', role:'전략가'}, {name:'소바', role:'척후대'}, {name:'사이퍼', role:'감시자'}
+    ],
+    tiers:{
+      S:['네온','클로브','사이퍼'], A:['소바','피닉스','킬조이','오멘'], B:['체임버','요루']
+    },
+    note:'3사이트 구조라 수비 인원 배분과 빠른 정보 전달, 미드 컨트롤이 핵심입니다.',
+    tip:'사이퍼 대신 킬조이가, 클로브 대신 오멘이 사용되곤 합니다.'
+  },
+  '스플릿': {
+    comp:[
+      {name:'바이퍼', role:'전략가'}, {name:'오멘', role:'전략가'},
+      {name:'페이드', role:'척후대'}, {name:'레이즈', role:'타격대'}, {name:'제트', role:'타격대'}
+    ],
+    tiers:{
+      S:['바이퍼','페이드'], A:['오멘','클로브','레이즈'], B:['스카이','네온','피닉스', '제트']
+    },
+    note:'좁은 통로가 많아 유틸 소모전이 핵심이라 연막으로 시간 지연 후, 타이밍 싸움이 중요합니다.',
+    tip:'대회에선 2연막 조합을 자주 쓰지만, 랭크에서는 바이퍼 대신 사이퍼가 사용되곤 합니다.'
+  },
+  '어센트': {
+    comp:[
+      {name:'소바', role:'척후대'}, {name:'제트', role:'타격대'},
+      {name:'오멘', role:'전략가'}, {name:'사이퍼', role:'감시자'}, {name:'요루', role:'타격대'}
+    ],
+    tiers:{
+      S:['소바','오멘'], A:['제트','사이퍼','킬조이'], B:['세이지','아스트라','하버','체임버']
+    },
+    note:'중앙 힘싸움이 맵 전체를 좌우해 오퍼레이터로 미드를 여는 능력이 중요합니다.', 
+    tip:'대회에서는 요루가 피닉스보다 더 사용되긴하지만, 랭크에서는 피닉스를 더 사용합니다.'
+  },
+  '브리즈': {
+    comp:[
+      {name:'네온', role:'타격대'}, {name:'소바', role:'척후대'},
+      {name:'바이퍼', role:'전략가'}, {name:'피닉스', role:'타격대'}, {name:'체임버', role:'감시자'}
+    ],
+    tiers:{
+      S:['네온','제트','소바'], A:['바이퍼','체임버','하버'], B:['케이오','피닉스']
+    },
+    note:'사이트가 넓고 개방적이라 원거리 교전(오퍼레이터)과 러쉬가 유리합니다.',
+    tip:'네온 또는 제트가 사용되고, 바이퍼 대신 하버도 사용합니다. 자신의 플레이 스타일에 따라 체임버를 사용하기도 합니다.'
+  },
+  '로터스': {
+    comp:[
+      {name:'N/A', role:'타격대'}, {name:'Phoenix', role:'타격대'},
+      {name:'N/a', role:'전략가'}, {name:'Sova', role:'척후대'}, {name:'Cypher', role:'감시자'}
+    ],
+    tiers:{
+      S:['Neon',''], A:['Killjoy','Neon','Sage'], B:['Cypher','Fade']
+    },
+    note:'문으로 진입로를 통제할 수 있어 문 개폐 타이밍이 핵심 변수입니다.'
+  },
+  '선셋': {
+    comp:[
+      {name:'오멘', role:'전략가'}, {name:'피닉스', role:'타격대'},
+      {name:'소바', role:'척후대'}, {name:'네온', role:'타격대'}, {name:'사이퍼', role:'감시자'}
+    ],
+    tiers:{
+      S:['오멘','소바'], A:['사이퍼','바이스','네온','제트','아이소'], B:['레이나','브림스톤','페이드']
+    },
+    note:'좌우 대칭형 사이트라 미드 컨트롤과 짧은 로테이션 동선 활용이 중요합니다.',
+    tip:'대회에서는 2선에 피닉스를 기용하곤 하지만 랭크에선 레이나, 아이소도 기용되곤 합니다.'
+  },
+  '서밋': {
+    comp:[
+      {name:'제트', role:'타격대'}, {name:'세이지', role:'감시자'},
+      {name:'피닉스', role:'타격대'}, {name:'페이드', role:'척후대'}, {name:'오멘', role:'감시자'}
+    ],
+    tiers:{
+      S:['세이지','페이드','제트'], A:['레이즈','사이퍼','클로브','오멘'], B:['바이퍼','테호']
+    },
+    note:'문을 닫아 각을 지우고 맵에 각이 많은 만큼 여러방향에서 리테이크를 볼 수 있습니다. (자세한 조합은 정리 중...)',
+    tip:'대회에서는 엔트리로 제트 대신 레이즈, 웨이레이가 사용되곤 합니다.'
+  },
+};
+
+const mapButtonsEl = document.getElementById('mapButtons');
+const compPanelEl = document.getElementById('compPanel');
+
+Object.keys(MAPS).forEach((mapName, i)=>{
+  const btn = document.createElement('button');
+  btn.className = 'map-btn' + (i===0 ? ' active' : '');
+  btn.innerHTML = `<span class="map-btn-inner"><img class="map-thumb" src="${mapThumbUrl(mapName)}" alt="${mapName}" onerror="this.style.display='none'">${mapName}</span>`;
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.map-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMap(mapName);
+  });
+  mapButtonsEl.appendChild(btn);
+});
+
+function renderMap(mapName){
+  const data = MAPS[mapName];
+  let agentsHTML = data.comp.map(a=>`
+    <div class="agent-chip">
+      <img class="agent-icon" src="${agentIconUrl(a.name)}" alt="${a.name}" onerror="this.style.visibility='hidden'">
+      <div>
+        <div class="agent-name">${a.name}</div>
+        <div class="agent-role">
+    <img src="${ROLE_ICON[a.role]}"
+         style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"
+         alt="${a.role}">
+    ${a.role}
+</div>
+      </div>
+    </div>
+  `).join('');
+
+  let tierHTML = ['S','A','B'].map(t=>`
+    <div class="tl-row">
+      <div class="tl-tag ${t}">${t}</div>
+      <div class="tl-agents">${data.tiers[t].map(name=>`
+        <span class="tl-agent-chip"><img src="${agentIconUrl(name)}" alt="${name}" onerror="this.style.visibility='hidden'">${name}</span>
+      `).join('')}</div>
+    </div>
+  `).join('');
+
+  compPanelEl.innerHTML = `
+    <img class="map-splash" src="${mapSplashUrl(mapName)}" alt="${mapName}" onerror="this.style.display='none'">
+<div class="comp-title">${mapName} 추천 조합</div>
+<div class="comp-sub">${data.note}</div>
+
+<div class="comp-tip">
+    ${data.tip}
+</div>
+
+<div class="agent-row">${agentsHTML}</div>
+    <div class="comp-title" style="font-size:15px; margin-bottom:10px;">${mapName} 요원 티어 리스트</div>
+    <div class="tierlist">${tierHTML}</div>
+    <div class="disclaimer">해당 조합과 티어 리스트는 2026년 7월 기준 발로란트 랭크/프로 메타 데이터(7.23~7.24 1군 경기)를 참고해 맵 특성에 맞게 정리한 참고용 가이드입니다. 실제 승률은 팀 구성과 개인 숙련도에 따라 달라질 수 있습니다.  이미지는 Riot Games의 공개 데이터 API(valorant-api.com)를 통해 제공됩니다.</div>
+  `;
+}
+
+renderMap(Object.keys(MAPS)[0]);
+
+/* ============ PAGE NAV (LANDING -> STEP 1 / STEP 2) ============ */
+(function(){
+  const landingScreen = document.getElementById('landingScreen');
+  const hero = document.getElementById('hero');
+  const pageNav = document.getElementById('pageNav');
+  const wrap = document.getElementById('wrap');
+  const navBtns = [document.getElementById('navBtn1'), document.getElementById('navBtn2')];
+  const landingBtns = [document.getElementById('landingBtn1'), document.getElementById('landingBtn2')];
+  const backBtn = document.getElementById('navBackBtn');
+  const pages = {'1': document.getElementById('page-1'), '2': document.getElementById('page-2')};
+
+  function enterPage(target){
+    landingScreen.style.display = 'none';
+    hero.style.display = 'block';
+    pageNav.style.display = 'flex';
+    wrap.style.display = 'block';
+    navBtns.forEach(b=> b.classList.toggle('active', b.dataset.page === target));
+    Object.keys(pages).forEach(key=>{
+      pages[key].style.display = (key === target) ? 'block' : 'none';
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  landingBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=> enterPage(btn.dataset.page));
+  });
+  navBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=> enterPage(btn.dataset.page));
+  });
+  backBtn.addEventListener('click', ()=>{
+    hero.style.display = 'none';
+    pageNav.style.display = 'none';
+    wrap.style.display = 'none';
+    landingScreen.style.display = 'flex';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>
