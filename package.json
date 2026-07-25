@@ -1,0 +1,6 @@
+{
+  "name": "valorant-match-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HenrikDev Valorant API 키를 숨기고 전적 데이터를 가공해 반환하는 Vercel 프록시 서버"
+} 
