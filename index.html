@@ -722,25 +722,25 @@ const ROUTINE_DEFS = [
   {
     name:'플릭 &amp; 정확도 루틴',
     focus:'순간적으로 각을 맞추는 플릭샷과 헤드샷 정확도에 집중합니다. 듀얼리스트/오퍼레이터 유저 추천.',
-    keyTip:'💡 실전 팁: 정지 상태에서 크로스헤어를 항상 예상 헤드 라인 높이에 맞춰두면(프리에이밍) 플릭 거리 자체가 줄어들어 정확도가 크게 올라갑니다.',
+    keyTip:'💡 실전 팁: 정지 상태에서 조준선을 항상 예상 헤드 라인 높이에 맞춰두면(프리에이밍) 플릭 거리 자체가 줄어들어 정확도가 크게 올라갑니다.',
     tierFit:[0,3],
     mult:1.0,
     taskPool:{
-      light:['연습장(Shooting Range) 봇 사격 5분 웜업', 'Aim Lab · Gridshot 3세트', 'Aim Lab · Microshot Frenzy 2세트', '연습장 스틸 사격 챌린지 5분', '데스매치 1판 (헤드샷 위주)', '연습장 헤드샷 전용 봇 사격 5분'],
-      medium:['연습장 웜업 10분', 'Aim Lab · Gridshot + Strafe Track 5세트', '연습장 스파이더샷 15분', 'Aim Lab · Pentakill Clicking 4세트', 'Kovaak 1w4ts Rotating Bloom 5세트', '데스매치 2판 (헤드샷 위주)'],
-      hard:['연습장 웜업 15분', 'Kovaak 스타일 1-wall 6target 6세트', 'Aim Lab Precise 시나리오 20분', 'Kovaak Air Angelic 4target 6세트', 'Aim Lab · Patch Dash 5세트', '데스매치 3판 + 리플레이 분석 10분']
+      light:['사격장(Shooting Range) 봇 사격 5분 웜업', 'Aim Lab · Gridshot 3세트', 'Aim Lab · Microshot Frenzy 2세트', '연습장 스틸 사격 챌린지 5분', '데스매치 1판 (헤드샷 위주)', '연습장 헤드샷 전용 봇 사격 5분'],
+      medium:['사격장 웜업 10분', 'Aim Lab · Gridshot + Strafe Track 5세트', '연습장 스파이더샷 15분', 'Aim Lab · Pentakill Clicking 4세트', 'Kovaak 1w4ts Rotating Bloom 5세트', '데스매치 2판 (헤드샷 위주)'],
+      hard:['사격장 웜업 15분', 'Kovaak 스타일 1-wall 6target 6세트', 'Aim Lab Precise 시나리오 20분', 'Kovaak Air Angelic 4target 6세트', 'Aim Lab · Patch Dash 5세트', '데스매치 3판 + 리플레이 분석 10분']
     }
   },
   {
     name:'트래킹 &amp; 리코일 컨트롤 루틴',
     focus:'움직이는 적을 따라가는 트래킹과 연사 시 탄퍼짐 제어를 훈련합니다. 라이플 교전이 잦은 랭크에 효과적.',
-    keyTip:'💡 실전 팁: 벌컨/밴달 스프레이는 상체를 따라 살짝 아래로 당기고, 5~7발마다 짧게 끊어 쏘는 버스트 사격을 병행하면 중거리 명중률이 안정됩니다.',
+    keyTip:'💡 실전 팁: 팬텀/밴달 스프레이는 상체를 따라 살짝 아래로 당기고, 2,3발마다 짧게 끊어 쏘는 버스트 사격을 병행하면 중거리 명중률이 안정됩니다.',
     tierFit:[3,5],
     mult:0.95,
     taskPool:{
-      light:['연습장 무빙 타겟 트래킹 5분', 'Aim Lab · Strafe Track 3세트', '벽 대고 리코일 패턴 연습 5분', 'Aim Lab · Detection Strafe 2세트', '연습장 이동 봇 사격 5분', 'Kovaak Smoothbot 2세트'],
-      medium:['연습장 트래킹 10분', 'Aim Lab · Detection Track 5세트', '리코일 스프레이 연습 10분', 'Aim Lab · Pasu Track 4세트', 'Kovaak Close Long Strafes 5세트', '데스매치 2판'],
-      hard:['연습장 트래킹 15분', 'Kovaak 스타일 Smooth Tracking 6세트', '풀오토 스프레이 정밀 훈련 15분', 'Kovaak Air Stimpak Voltaic 6세트', 'Aim Lab · Strafe Invincible 5세트', '데스매치 3판 + 감도 미세조정 점검']
+      light:['사격장 무빙 타겟 트래킹 5분', 'Aim Lab · Strafe Track 3세트', '벽 대고 리코일 패턴 연습 5분', 'Aim Lab · Detection Strafe 2세트', '연습장 이동 봇 사격 5분', 'Kovaak Smoothbot 2세트'],
+      medium:['사격장 트래킹 10분', 'Aim Lab · Detection Track 5세트', '리코일 스프레이 연습 10분', 'Aim Lab · Pasu Track 4세트', 'Kovaak Close Long Strafes 5세트', '데스매치 2판'],
+      hard:['사격장 트래킹 15분', 'Kovaak 스타일 Smooth Tracking 6세트', '풀오토 스프레이 정밀 훈련 15분', 'Kovaak Air Stimpak Voltaic 6세트', 'Aim Lab · Strafe Invincible 5세트', '데스매치 3판 + 감도 미세조정 점검']
     }
   },
   {
@@ -750,9 +750,9 @@ const ROUTINE_DEFS = [
     tierFit:[5,7],
     mult:1.0,
     taskPool:{
-      light:['연습장 좌우 스트레이핑 정지사격 5분', 'Aim Lab · Strafe Shot Reload 3세트', '커스텀 1대1 오프앵글 5분', '연습장 스트레이핑 반응 사격 5분', '자주 쓰는 앵글 1곳 프리에이밍 연습 5분', 'Aim Lab · Strafe Peek 2세트'],
-      medium:['연습장 스트레이핑 정지사격 10분', 'Aim Lab · Strafe Track + Reload 5세트', '자주 쓰는 앵글 3곳 프리에이밍 연습 10분', 'Kovaak Strafe Aim Trainer 4세트', '커스텀 1대1 오프앵글 10분', '데스매치 2판'],
-      hard:['연습장 스트레이핑 정지사격 15분', 'Kovaak 스타일 Strafe Aim Trainer 6세트', '커스텀 오프앵글 교전 20분', 'Kovaak Air Strafe Peek 6세트', '자주 쓰는 앵글 5곳 프리에이밍 정밀 연습 15분', '경쟁전 워밍업 1판 + 앵글별 프리에이밍 리뷰']
+      light:['사격장 좌우 스트레이핑 정지사격 5분', 'Aim Lab · Strafe Shot Reload 3세트', '커스텀 1대1 오프앵글 5분', '연습장 스트레이핑 반응 사격 5분', '자주 쓰는 앵글 1곳 프리에이밍 연습 5분', 'Aim Lab · Strafe Peek 2세트'],
+      medium:['사격장 스트레이핑 정지사격 10분', 'Aim Lab · Strafe Track + Reload 5세트', '자주 쓰는 앵글 3곳 프리에이밍 연습 10분', 'Kovaak Strafe Aim Trainer 4세트', '커스텀 1대1 오프앵글 10분', '데스매치 2판'],
+      hard:['사격장 스트레이핑 정지사격 15분', 'Kovaak 스타일 Strafe Aim Trainer 6세트', '커스텀 오프앵글 교전 20분', 'Kovaak Air Strafe Peek 6세트', '자주 쓰는 앵글 5곳 프리에이밍 정밀 연습 15분', '경쟁전 워밍업 1판 + 앵글별 프리에이밍 리뷰']
     }
   },
   {
