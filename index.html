@@ -552,7 +552,7 @@
       <span class="sec-num">📊</span>
       <h2 class="sec-title">전적 분석 &amp; 목표 달성률</h2>
     </div>
-    <p class="sec-desc">닉네임과 분석할 최근 경기 수를 선택하면 킬뎃 · ACS를 바탕으로 경기별 등급(A/B/C)을 매기고, 목표 티어 달성률과 티어별 · 요원별 꿀팁을 하나씩 제안해드립니다.</p>
+    <p class="sec-desc">닉네임과 분석할 최근 경기 수를 선택하면 킬뎃 · ACS를 바탕으로 경기별 등급(A/B/C)을 매기고, 목표 티어 달성률과 티어별 · 요원별 꿀팁을 하나씩 제안해드립니다.</br></br> A: ACS 250, KD 1.2 이상 / B: ACS 195, KD 0.9 이상 / C: 그 이하</p>
 
     <div class="card">
       <div class="match-input-row">
@@ -718,14 +718,14 @@ function mapSplashUrl(name){
 
 /* ============ TIER DATA ============ */
 const TIERS = [
-  {name:'아이언',   aliases:['아이언','iron'],           divisions:3, color:'#4a4a4a', accent:'#6b6b6b'},
-  {name:'브론즈',   aliases:['브론즈','bronze'],          divisions:3, color:'#8a5a3c', accent:'#c08a5c'},
-  {name:'실버',     aliases:['실버','silver'],            divisions:3, color:'#8a97a3', accent:'#c7d0d6'},
-  {name:'골드',     aliases:['골드','gold'],              divisions:3, color:'#c99a1c', accent:'#f0c419'},
-  {name:'플래티넘', aliases:['플래티넘','플래','platinum','plat'], divisions:3, color:'#1f9e8e', accent:'#4fd6c4'},
-  {name:'다이아몬드', aliases:['다이아몬드','다이아','diamond','dia'], divisions:3, color:'#9b6bd6', accent:'#c49aec'},
-  {name:'초월자',   aliases:['초월자','초월','어센던트','ascendant'], divisions:3, color:'#3fae5c', accent:'#6fdc8c'},
-  {name:'불멸',     aliases:['불멸','이모탈','immortal'], divisions:3, color:'#b3324f', accent:'#e0546f'},
+  {name:'아이언',   aliases:['아이언','iron','아'],           divisions:3, color:'#4a4a4a', accent:'#6b6b6b'},
+  {name:'브론즈',   aliases:['브론즈','bronze','브'],          divisions:3, color:'#8a5a3c', accent:'#c08a5c'},
+  {name:'실버',     aliases:['실버','silver','실'],            divisions:3, color:'#8a97a3', accent:'#c7d0d6'},
+  {name:'골드',     aliases:['골드','gold','골'],              divisions:3, color:'#c99a1c', accent:'#f0c419'},
+  {name:'플래티넘', aliases:['플래티넘','플래','platinum','plat','플'], divisions:3, color:'#1f9e8e', accent:'#4fd6c4'},
+  {name:'다이아몬드', aliases:['다이아몬드','다이아','diamond','dia','다'], divisions:3, color:'#9b6bd6', accent:'#c49aec'},
+  {name:'초월자',   aliases:['초월자','초월','어센던트','ascendant','초'], divisions:3, color:'#3fae5c', accent:'#6fdc8c'},
+  {name:'불멸',     aliases:['불멸','이모탈','immortal','불'], divisions:3, color:'#b3324f', accent:'#e0546f'},
   {name:'레디언트', aliases:['레디언트','radiant'],        divisions:1, color:'#e8d24c', accent:'#fff7b0'}
 ];
 
@@ -815,6 +815,7 @@ targetBadgeWrap.innerHTML = badgeSVG(null);
 
 let currentIdx = -1;
 let targetIdx = -1;
+let isRadiantMode = false;
 
 currentInput.addEventListener('input', ()=>{
   const idx = findStepIndex(currentInput.value);
@@ -828,6 +829,8 @@ currentInput.addEventListener('input', ()=>{
     targetSelect.innerHTML = '<option>먼저 현재 티어를 입력하세요</option>';
     targetSelect.disabled = true;
     targetIdx = -1;
+    isRadiantMode = false;
+    generateBtn.textContent = '에임 루틴 생성하기';
     updateTargetBadge();
     checkReady();
     return;
@@ -843,9 +846,11 @@ currentInput.addEventListener('input', ()=>{
   targetSelect.innerHTML = '';
   const higherSteps = STEPS.filter((s,i)=> i>idx);
   if(higherSteps.length===0){
-    targetSelect.innerHTML = '<option>이미 최고 티어입니다!</option>';
+    targetSelect.innerHTML = '<option>레디언트는 최고 티어라 목표 선택이 필요 없습니다</option>';
     targetSelect.disabled = true;
+    isRadiantMode = true;
   } else {
+    isRadiantMode = false;
     targetSelect.disabled = false;
     const placeholder = document.createElement('option');
     placeholder.textContent = '목표 티어를 선택하세요';
@@ -859,9 +864,12 @@ currentInput.addEventListener('input', ()=>{
       targetSelect.appendChild(opt);
     });
   }
-  targetHint.textContent = '현재 티어보다 낮은 티어는 선택할 수 없습니다.';
+  targetHint.textContent = isRadiantMode
+    ? '레디언트 전용 에임 루틴이 바로 생성됩니다.'
+    : '현재 티어보다 낮은 티어는 선택할 수 없습니다.';
   targetHint.className = 'hint';
   targetIdx = -1;
+  generateBtn.textContent = isRadiantMode ? '레디언트 전용 에임 루틴' : '에임 루틴 생성하기';
   updateTargetBadge();
   checkReady();
 });
@@ -874,6 +882,14 @@ targetSelect.addEventListener('change', ()=>{
 });
 
 function updateTargetBadge(){
+  if(isRadiantMode){
+    targetBadgeWrap.innerHTML = badgeSVG(STEPS[currentIdx]);
+    targetBadgeName.textContent = '레디언트 (최고 티어)';
+    targetBadgeDiv.textContent = '목표 설정 불필요';
+    gapReadout.style.display = 'block';
+    gapReadout.innerHTML = '이미 <b>레디언트</b>이므로 목표 티어 대신 <b>레디언트 전용 에임 루틴</b>이 생성됩니다.';
+    return;
+  }
   if(targetIdx===-1){
     targetBadgeWrap.innerHTML = badgeSVG(null);
     targetBadgeName.textContent = '목표 티어 선택 대기중';
@@ -892,6 +908,10 @@ function updateTargetBadge(){
 }
 
 function checkReady(){
+  if(isRadiantMode){
+    generateBtn.disabled = (currentIdx===-1);
+    return;
+  }
   generateBtn.disabled = !(currentIdx!==-1 && targetIdx!==-1 && targetIdx>currentIdx);
 }
 
@@ -948,6 +968,35 @@ const ROUTINE_DEFS = [
 ];
 
 
+const RADIANT_ROUTINE = {
+  name:'레디언트 전용 유지 &amp; 심화 루틴',
+  focus:'이미 최상위 구간에 도달했으므로 티어 상승보다는 폼 유지와 디테일 다듬기가 핵심입니다. 멀티 타겟 전환, 압박 상황 트래킹, 프리에이밍 정밀도를 집중적으로 관리하는 루틴입니다.',
+  keyTip:'💡 실전 팁: 최상위 구간에서는 손목 컨디션 관리가 실력만큼 중요합니다. 워밍업 없이 바로 고강도 훈련에 들어가면 오히려 폼이 무너지기 쉬우니, 가벼운 사격장 웜업으로 항상 세션을 시작하세요.',
+  taskPool:{
+    light:[
+      '사격장 웜업 5분 (헤드샷 라인 프리에이밍 체크)',
+      '<a href="https://go.aimlab.gg/v1/redirects?link=aimlab%3a%2f%2fworkshop%3fid%3d3771969833%26source%3dF6FD944B178E900C&link=steam%3a%2f%2frungameid%2f714010" target="_blank">에임랩 식스샷, 그리드샷(빠름), 스트레이프트랙, 스위치트랙 1회</a>',
+      '데스매치 1판 (원탭·투탭 정확도 위주)',
+      '자주 나오는 앵글 3곳 프리에이밍 리마인드 5분',
+      '전날 경기 하이라이트 리플레이 5분 리뷰'
+    ],
+    medium:[
+      '사격장 웜업 10분',
+      '<a href="https://go.aimlab.gg/v1/redirects?link=aimlab%3a%2f%2fworkshop%3fid%3d3771969833%26source%3dF6FD944B178E900C&link=steam%3a%2f%2frungameid%2f714010" target="_blank">에임랩 식스샷, 그리드샷(빠름), 스트레이프트랙, 스위치트랙 2회 반복</a>',
+      '데스매치 2판 (오퍼레이터 포함 원탭 트레이닝)',
+      '멀티 타겟 스위칭 드릴 10분 (2인 이상 동시 교전 가정)',
+      '난투 2판 (반응속도 위주)'
+    ],
+    hard:[
+      '사격장 웜업 15분',
+      '<a href="https://go.aimlab.gg/v1/redirects?link=aimlab%3a%2f%2fworkshop%3fid%3d3771969833%26source%3dF6FD944B178E900C&link=steam%3a%2f%2frungameid%2f714010" target="_blank">에임랩 식스샷, 그리드샷(빠름), 스트레이프트랙, 스위치트랙 3회 반복</a>',
+      '경쟁전 워밍업 1판 (실전 압박 상황 트래킹 집중)',
+      '멀티 타겟 스위칭 + 카운터 스트레이핑 복합 드릴 10분',
+      '경기 후 리플레이 정밀 분석 15분 (교전 타이밍·포지셔닝 체크)'
+    ]
+  }
+};
+
 //https://go.aimlab.gg/v1/redirects?link=aimlab%3a%2f%2fworkshop%3fid%3d3771969833%26source%3dF6FD944B178E900C&link=steam%3a%2f%2frungameid%2f714010
 const TASK_PICK_COUNT = {light:3, medium:4, hard:4};
 
@@ -984,7 +1033,77 @@ function formatPeriod(days){
   return `약 ${weeks}주 (약 ${months}개월)`;
 }
 
-generateBtn.addEventListener('click', ()=> renderRoutines());
+generateBtn.addEventListener('click', ()=>{
+  if(isRadiantMode) renderRadiantRoutine();
+  else renderRoutines();
+});
+
+function renderRadiantRoutine(){
+  const out = document.getElementById('routines-out');
+  document.getElementById('routines-desc').textContent =
+    '레디언트 전용 에임 루틴입니다. 티어 상승이 아닌 폼 유지·심화 훈련에 초점을 맞춰 구성되었습니다.';
+
+  out.innerHTML = '';
+
+  const weeklyBox = document.createElement('div');
+  weeklyBox.className = 'weekly-plan';
+  const wpDaysHTML = WEEKLY_PLAN.map(d=>`
+    <div class="wp-day ${d.level}">
+      <div class="wp-dname">${d.day}</div>
+      <div class="wp-dlevel">${DIFF_LABEL[d.level]}</div>
+    </div>
+  `).join('');
+  weeklyBox.innerHTML = `
+    <div class="wp-title">📅 추천 주간 훈련 스케줄</div>
+    <div class="wp-desc">⭐ 레디언트 구간에서는 폼 유지가 핵심입니다. 하드·미드·라이트를 섞어 훈련하고, 주 1회는 반드시 휴식을 챙겨 번아웃을 피하세요.</div>
+    <div class="wp-days">${wpDaysHTML}</div>
+  `;
+  out.appendChild(weeklyBox);
+
+  const block = document.createElement('div');
+  block.className = 'routine-block';
+
+  const head = document.createElement('div');
+  head.className = 'routine-head';
+  head.innerHTML = `<div class="routine-idx">★</div><div class="routine-title">${RADIANT_ROUTINE.name}</div><span class="best-fit-badge">⭐ 레디언트 전용</span>`;
+  block.appendChild(head);
+
+  const focus = document.createElement('div');
+  focus.className = 'routine-focus';
+  focus.textContent = RADIANT_ROUTINE.focus;
+  block.appendChild(focus);
+
+  const keyTip = document.createElement('div');
+  keyTip.className = 'routine-keytip';
+  keyTip.textContent = RADIANT_ROUTINE.keyTip;
+  block.appendChild(keyTip);
+
+  const stack = document.createElement('div');
+  stack.className = 'diff-stack';
+
+  DIFF_DEFS.forEach(d=>{
+    const card = document.createElement('div');
+    card.className = `diff-card ${d.key}`;
+    const chosenTasks = pickTasks(RADIANT_ROUTINE.taskPool[d.key], TASK_PICK_COUNT[d.key]);
+    const tasksHTML = chosenTasks.map(t=>`<li>${t}</li>`).join('');
+    card.innerHTML = `
+      <div class="diff-name">${d.label}<small>1회 약 ${d.session}분</small></div>
+      <ul class="diff-tasks">${tasksHTML}</ul>
+      <div class="diff-stats">
+        <div class="est">매일 꾸준히</div>
+        <div class="persess">폼 유지 권장 주기</div>
+      </div>
+    `;
+    stack.appendChild(card);
+  });
+
+  block.appendChild(stack);
+  out.appendChild(block);
+
+  out.style.display = 'block';
+  regenerateBtn.style.display = 'inline-block';
+  out.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
 
 function renderRoutines(){
   const gap = targetIdx - currentIdx;
@@ -1063,7 +1182,10 @@ function renderRoutines(){
 }
 
 const regenerateBtn = document.getElementById('regenerateBtn');
-regenerateBtn.addEventListener('click', ()=> renderRoutines());
+regenerateBtn.addEventListener('click', ()=>{
+  if(isRadiantMode) renderRadiantRoutine();
+  else renderRoutines();
+});
 
 
 
