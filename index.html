@@ -59,6 +59,63 @@
   .page-nav-btn.active{border-color:var(--red); color:var(--white); background:#241419;}
   .page-nav-btn .pn-step{color:var(--red); margin-right:8px;}
   #navBackBtn{flex:0 0 auto; min-width:auto;}
+  #loadRoutineBtn{
+    position:fixed; top:18px; right:18px; z-index:200;
+    flex:0 0 auto; min-width:auto; width:auto;
+    background:rgba(15,35,28,.9); backdrop-filter:blur(6px);
+    border:1px solid var(--green); color:var(--green);
+    padding:10px 16px; border-radius:8px; font-weight:800; font-size:12px;
+    letter-spacing:.03em; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,.35);
+    transition:background .15s, transform .1s;
+  }
+  #loadRoutineBtn:hover{background:#123527; transform:translateY(-1px);}
+  @media (max-width:600px){
+    #loadRoutineBtn{top:10px; right:10px; padding:8px 12px; font-size:11px;}
+  }
+
+  /* ROUTINE SAVE/LOAD MODAL */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:1000; display:none;
+    align-items:center; justify-content:center;
+    background:rgba(6,7,10,.72); backdrop-filter:blur(2px);
+    padding:20px;
+  }
+  .modal-box{
+    width:min(380px, 100%); background:var(--bg2); border:1px solid var(--line);
+    border-radius:14px; padding:26px; box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .modal-title{font-size:18px; font-weight:800; color:var(--white); margin-bottom:6px;}
+  .modal-desc{font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:16px;}
+  .modal-input{
+    width:100%; padding:11px 13px; background:var(--bg3); border:1px solid var(--line);
+    border-radius:8px; color:var(--white); font-size:14px; outline:none;
+  }
+  .modal-input:focus{border-color:var(--red);}
+  .modal-error{font-size:12px; min-height:15px; margin-top:8px; color:var(--red); font-weight:600;}
+  .modal-btns{display:flex; justify-content:flex-end; gap:10px; margin-top:20px;}
+  .modal-btn-cancel{
+    background:transparent; border:1px solid var(--line); color:var(--muted);
+    padding:9px 16px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;
+  }
+  .modal-btn-cancel:hover{border-color:#565c6b; color:var(--white);}
+  .modal-btn-confirm{
+    background:var(--red); border:1px solid var(--red); color:#fff;
+    padding:9px 18px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer;
+  }
+  .modal-btn-confirm:hover{filter:brightness(1.08);}
+  .modal-btn-confirm:disabled{opacity:.55; cursor:default;}
+  .modal-code-display{margin-top:4px;}
+  .modal-code-value{
+    font-size:30px; font-weight:900; letter-spacing:.14em; text-align:center;
+    color:var(--gold); background:var(--bg3); border:1px dashed var(--line);
+    border-radius:10px; padding:16px 10px; margin-bottom:12px; font-family:monospace;
+  }
+  .modal-copy-btn{
+    width:100%; background:transparent; border:1px solid var(--green); color:var(--green);
+    padding:10px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer;
+  }
+  .modal-copy-btn:hover{background:#123527;}
+  #saveRoutineBtn{width:auto; padding-left:28px; padding-right:28px;}
 
   /* LANDING SCREEN */
   .landing-screen{
@@ -284,6 +341,26 @@
   }
   .tl-agent-chip img{width:22px; height:22px; border-radius:50%; object-fit:cover; background:#0d0e12;}
 
+  .agent-picker-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(64px,1fr)); gap:8px; margin-top:2px;
+  }
+  .agent-pick-btn{
+    display:flex; flex-direction:column; align-items:center; gap:5px; background:var(--bg3);
+    border:1px solid var(--line); border-radius:8px; padding:9px 4px 7px; cursor:pointer;
+    transition:border-color .15s, background .15s; text-align:center;
+  }
+  .agent-pick-btn:hover{border-color:var(--muted);}
+  .agent-pick-btn.active{border-color:var(--red); background:#241419;}
+  .agent-pick-btn.active span{color:var(--red);}
+  .agent-pick-btn img{width:34px; height:34px; border-radius:7px; object-fit:cover; background:#0d0e12;}
+  .agent-pick-btn span{font-size:10.5px; color:var(--muted); font-weight:700; line-height:1.2;}
+  .agent-pick-btn.none-btn{justify-content:center; min-height:66px;}
+  .agent-pick-btn.none-btn span{font-size:11px;}
+
+  .agent-drill-list{margin:2px 0 10px; padding-left:18px; font-size:13px; color:#d8dbe2; line-height:1.65;}
+  .agent-drill-list li{margin-bottom:2px;}
+  .agent-general-tip{font-size:12.5px; color:var(--muted); padding-top:8px; border-top:1px dashed var(--line);}
+
   .map-thumb{width:56px; height:32px; object-fit:cover; border-radius:4px; margin-right:10px; vertical-align:middle; background:#0d0e12;}
   .map-btn-inner{display:flex; align-items:center;}
   .map-splash{width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:16px; display:block;}
@@ -406,6 +483,8 @@
 </head>
 <body>
 
+<button class="page-nav-btn" id="loadRoutineBtn">📂 내 루틴 불러오기</button>
+
 <div class="bg-image"></div>
 <div class="bg-overlay"></div>
 
@@ -449,6 +528,23 @@
   <button class="page-nav-btn active" id="navBtn1" data-page="1"><span class="pn-step">STEP 1</span>에임 루틴 추천 받기</button>
   <button class="page-nav-btn" id="navBtn2" data-page="2"><span class="pn-step">STEP 2</span>맵별 추천 조합 &amp; 요원 티어 리스트</button>
   <button class="page-nav-btn" id="navBtn3" data-page="3"><span class="pn-step">STEP 3</span>전적 분석 &amp; 목표 달성률</button>
+</div>
+
+<div class="modal-overlay" id="routineModalOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="routineModalTitle">루틴 저장하기</div>
+    <div class="modal-desc" id="routineModalDesc">저장할 때 받았던 코드를 입력하세요.</div>
+    <input type="text" id="routineModalInput" class="modal-input" placeholder="코드를 입력하세요 (예: 7K2PXQ)" autocomplete="off">
+    <div class="modal-code-display" id="routineModalCodeDisplay" style="display:none;">
+      <div class="modal-code-value" id="routineModalCodeValue">------</div>
+      <button class="modal-copy-btn" id="routineModalCopyBtn" type="button">코드 복사하기</button>
+    </div>
+    <div class="modal-error" id="routineModalError"></div>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" id="routineModalCancel">취소</button>
+      <button class="modal-btn-confirm" id="routineModalConfirm">확인</button>
+    </div>
+  </div>
 </div>
 
 <div class="wrap" id="wrap" style="display:none;">
@@ -498,6 +594,14 @@
         <div class="gap-readout" id="gapReadout"></div>
       </div>
     </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">주 사용 요원 (선택)</label>
+        <div class="agent-picker-grid" id="mainAgentPicker"></div>
+        <div class="hint">주 사용 요원을 선택하면 에임 루틴과 함께 맵별 연습법도 같이 추천해드려요.</div>
+      </div>
+    </div>
   </section>
 
   <section id="routines-section">
@@ -508,6 +612,10 @@
     <p class="sec-desc" id="routines-desc">위에서 티어를 입력하고 루틴을 생성하면 난이도별(라이트 · 미드 · 하드) 소요 시간과 목표 티어 도달 예상 기간이 계산되어 표시됩니다.</p>
     <button class="btn" id="regenerateBtn" style="display:none; width:auto; margin-bottom:24px;">🔀 다른 조합으로 다시 뽑기</button>
     <div id="routines-out"></div>
+    <div style="text-align:center; margin-top:32px; padding-top:24px; border-top:1px solid var(--line);">
+      <button class="btn" id="saveRoutineBtn">💾 루틴 저장하기</button>
+      <div class="hint" style="margin-top:10px;">아이디를 정해서 저장하면, 위 [내 루틴 불러오기]로 언제든 다시 불러올 수 있어요.</div>
+    </div>
   </section>
 
 </div>
@@ -816,6 +924,7 @@ targetBadgeWrap.innerHTML = badgeSVG(null);
 let currentIdx = -1;
 let targetIdx = -1;
 let isRadiantMode = false;
+let selectedAgent = '';
 
 currentInput.addEventListener('input', ()=>{
   const idx = findStepIndex(currentInput.value);
@@ -1038,6 +1147,45 @@ generateBtn.addEventListener('click', ()=>{
   else renderRoutines();
 });
 
+function buildRoutineAgentTipBox(){
+  if(!selectedAgent) return null;
+  const box = document.createElement('div');
+  box.className = 'tip-box';
+  box.innerHTML = `
+    <div class="tip-icon"><img src="${agentIconUrl(selectedAgent)}" alt="${selectedAgent}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'"></div>
+    <div class="tip-body">
+      <div class="tip-head">
+        ${selectedAgent} 맞춤 연습법 (${AGENT_ROLE[selectedAgent]||''})
+        <button class="reroll-btn" id="routineAgentTipReroll">다른 팁 보기</button>
+      </div>
+      <ul class="agent-drill-list" id="routineAgentDrillList"></ul>
+      <div class="agent-general-tip" id="routineAgentTipText"></div>
+    </div>
+  `;
+  return box;
+}
+
+function renderRoutineAgentTipText(){
+  const drillPool = AGENT_MAP_DRILLS[selectedAgent] || [];
+  const drillList = document.getElementById('routineAgentDrillList');
+  if(drillList){
+    const chosen = shuffle(drillPool).slice(0, Math.min(3, drillPool.length));
+    drillList.innerHTML = chosen.map(d=>`<li>${d}</li>`).join('');
+  }
+  const pool = AGENT_TIPS[selectedAgent] || ['꾸준한 반복 연습이 가장 확실한 실력 상승 방법입니다.'];
+  const el = document.getElementById('routineAgentTipText');
+  if(el) el.textContent = pool[Math.floor(Math.random()*pool.length)];
+}
+
+function attachRoutineAgentTipBox(out){
+  const box = buildRoutineAgentTipBox();
+  if(!box) return;
+  out.appendChild(box);
+  renderRoutineAgentTipText();
+  const rerollBtn = document.getElementById('routineAgentTipReroll');
+  if(rerollBtn) rerollBtn.addEventListener('click', renderRoutineAgentTipText);
+}
+
 function renderRadiantRoutine(){
   const out = document.getElementById('routines-out');
   document.getElementById('routines-desc').textContent =
@@ -1059,6 +1207,7 @@ function renderRadiantRoutine(){
     <div class="wp-days">${wpDaysHTML}</div>
   `;
   out.appendChild(weeklyBox);
+  attachRoutineAgentTipBox(out);
 
   const block = document.createElement('div');
   block.className = 'routine-block';
@@ -1132,6 +1281,7 @@ function renderRoutines(){
     <div class="wp-days">${wpDaysHTML}</div>
   `;
   out.appendChild(weeklyBox);
+  attachRoutineAgentTipBox(out);
 
   ROUTINE_DEFS.forEach((r, ri)=>{
     const block = document.createElement('div');
@@ -1460,6 +1610,69 @@ const AGENT_TIPS = {
   '믹스':['전략가답게 팀 진입 타이밍에 맞춰 시야를 차단하는 연습을 하세요.','유틸 배치를 라운드 시작 전에 미리 계획해 대응 속도를 높이세요.'],
   '비토':['전략가답게 유틸로 시야를 가린 뒤 팀과 동시에 움직이는 타이밍을 맞추세요.','라운드 후반 유틸 재활용 타이밍까지 계획해두면 안정적인 운영이 가능합니다.']
 };
+
+// 요원별 맵 특화 연습 코스 (STEP 1 에임 루틴에서 주 사용 요원 선택 시 노출)
+const AGENT_MAP_DRILLS = {
+  '제트':['헤이븐 C사이트 진입각 대시 타이밍 연습하기','어센트 A사이트 스모크볼 진입 연습하기','로터스 미드 오프앵글 견제 연습하기','바인드 B사이트 궁극기 픽 후 탈출 루트 연습하기'],
+  '레이즈':['스플릿 B사이트 붐봇 코너 정보 연습하기','아이스박스 미드 폭발물 스택 견제 연습하기','펄 A사이트 궁극기 진입 타이밍 연습하기','선셋 마켓 통로 클레이모어 배치 연습하기'],
+  '피닉스':['바인드 헛간 셀프 플래시 진입 연습하기','헤이븐 C롱 커브 플래시 연습하기','코로드 A사이트 벽너머 파이어볼 연습하기','어센트 미드 궁극기 리스폰 교전 연습하기'],
+  '레이나':['아이스박스 A사이트 근거리 교전 연습하기','프랙처 미드 궁극기 상태 짧은 교전 연습하기','서밋 힐 유틸 관리 타이밍 연습하기','펄 B사이트 회복 타이밍 연습하기'],
+  '요루':['어비스 게이트 예상 밖 진입 루트 연습하기','로터스 A사이트 사각 이동 루트 연습하기','바인드 텔레포트 진입 타이밍 연습하기','코로드 미드 시야 밖 정보 획득 연습하기'],
+  '네온':['헤이븐 B사이트 슬라이드 사격 연습하기','스플릿 미드 스턴 벽 진입 연습하기','선셋 A사이트 스프린트 교전 거리 좁히기 연습하기','어센트 커넥터 예측 사격 회피 연습하기'],
+  '아이소':['펄 A사이트 1v1 실드 궁극기 타이밍 연습하기','아이스박스 B사이트 진입 반응 사격 유도 연습하기','로터스 미드 안정적 교전 포지션 연습하기','서밋 클러치 상황 실드 활용 연습하기'],
+  '웨이레이':['어비스 미드 이동 유틸 오프앵글 연습하기','코로드 B사이트 팀 유틸 맞춰 진입 연습하기','선셋 마켓 예상치 못한 각 교전 연습하기','헤이븐 A사이트 이동 루트 다양화 연습하기'],
+  '소바':['헤이븐 정찰화살 초반 정보 루트 연습하기','바인드 벽 관통 궁극기 각 연습하기','어센트 A사이트 정찰화살 타이밍 연습하기','스플릿 미드 정보 사살 연습하기'],
+  '브리치':['바인드 헛간 플래시 진입 타이밍 연습하기','아이스박스 B사이트 지진 유틸 흔들기 연습하기','펄 벽 너머 스킬 콜 타이밍 연습하기','코로드 A사이트 팀 진입 타이밍 연습하기'],
+  '스카이':['어센트 A사이트 정찰 유틸 정보 공유 타이밍 연습하기','바인드 힐 유틸 회복 타이밍 연습하기','펄 B사이트 정찰 타이밍 연습하기','로터스 팀 공유 루틴 연습하기'],
+  '케이/오':['프랙처 넉아웃 궁극기 유틸 무력화 연습하기','로터스 다트 상대 위치 파악 연습하기','아이스박스 A사이트 정보 공유 타이밍 연습하기','바인드 B사이트 몰아치기 타이밍 연습하기'],
+  '페이드':['로터스 A사이트 예지 스킬 발자국 추적 연습하기','헤이븐 공포 유틸 시야 차단 진입 연습하기','스플릿 미드 각 싸움 우위 잡기 연습하기','펄 B사이트 진입 타이밍 맞추기 연습하기'],
+  '게코':['어센트 A사이트 정찰 유틸 회수 루틴 연습하기','선셋 리테이크 유틸 재사용 타이밍 연습하기','바인드 진입 전 반응 확인 습관 연습하기','서밋 B사이트 정찰 유틸 타이밍 연습하기'],
+  '테호':['코로드 미드 위치 파악 및 공유 타이밍 연습하기','어비스 A사이트 유틸 시야 확보 연습하기','헤이븐 B사이트 안전 거리 교전 연습하기','로터스 정보 공유 루틴 연습하기'],
+  '사이퍼':['헤이븐 C사이트 트랩와이어 사각지대 설치 연습하기','바인드 B사이트 카메라 정보 확인 연습하기','어센트 A사이트 뒤잡기 방지 트랩 연습하기','펄 미드 카메라 로테이션 체크 연습하기'],
+  '킬조이':['아이스박스 A사이트 궁극기+터렛 봉쇄 연습하기','스플릿 B사이트 유틸 진입로 배치 연습하기','선셋 마켓 러쉬 지연 유틸 연습하기','로터스 리테이크 봉쇄 연습하기'],
+  '체임버':['바인드 순간이동 안전거리 확보 연습하기','펄 A사이트 정밀 사격 포지션 연습하기','서밋 오프앵글 고정 사격 연습하기','헤이븐 C롱 포지션 플레이 연습하기'],
+  '세이지':['어센트 A사이트 부활 타이밍 클러치 연습하기','코로드 슬로우 유틸 진입로 지연 연습하기','펄 B사이트 벽 배치 연습하기','로터스 리테이크 벽 타이밍 연습하기'],
+  '데드록':['아이스박스 B사이트 구속 유틸 통로 봉쇄 연습하기','스플릿 미드 궁극기 타이밍 연습하기','선셋 A사이트 강제 노출 유틸 연습하기','서밋 리테이크 시간 벌기 연습하기'],
+  '바이스':['프랙처 벽 유틸 진입로 차단 연습하기','로터스 B사이트 사각지대 유틸 배치 연습하기','어비스 수비 정보 우위 유틸 연습하기','코로드 러쉬 지연 유틸 연습하기'],
+  '브림스톤':['헤이븐 궁극기 사이트 봉쇄 연습하기','바인드 B사이트 연막 통로 차단 연습하기','스플릿 A사이트 동시 진입 콜 타이밍 연습하기','펄 시간 버는 연막 타이밍 연습하기'],
+  '바이퍼':['아이스박스 궁극기 유지시간 계산 연습하기','브리즈 A사이트 독안개 벽 라인업 연습하기','로터스 미드 시야 차단 동시 진입 연습하기','선셋 후반 재사용 타이밍 연습하기'],
+  '오멘':['헤이븐 C사이트 다크커버 라인업 연습하기','어센트 A사이트 텔레포트 오프앵글 연습하기','스플릿 미드 예상 밖 정보 획득 연습하기','펄 B사이트 스모크 타이밍 연습하기'],
+  '아스트라':['바인드 궁극기 스타 배치 연습하기','코로드 라운드 시작 전 별자리 계획 연습하기','로터스 A사이트 화력 집중 유도 연습하기','서밋 대응 속도 향상 연습하기'],
+  '하버':['어비스 광역 벽+스모크 조합 연습하기','펄 A사이트 쉴드 유틸 진입 보호 연습하기','스플릿 B사이트 팀 전진 타이밍 연습하기','헤이븐 사이트 전체 차단 연습하기'],
+  '클로브':['로터스 부활 타이밍 계산 연습하기','아이스박스 연막 재활용 타이밍 연습하기','선셋 후반 라운드 안전 활용 연습하기','코로드 무리한 교전 회피 연습하기'],
+  '믹스':['서밋 팀 진입 타이밍 시야 차단 연습하기','스플릿 라운드 시작 전 유틸 배치 연습하기','로터스 대응 속도 향상 연습하기','펄 미드 시야 차단 연습하기'],
+  '비토':['어비스 유틸 시야 차단 동시 진입 연습하기','바인드 후반 유틸 재활용 계획 연습하기','헤이븐 안정적 운영 타이밍 연습하기','코로드 팀 동시 진입 타이밍 연습하기']
+};
+
+const ROLE_ORDER = ['타격대','척후대','감시자','전략가'];
+(function populateMainAgentPicker(){
+  const picker = document.getElementById('mainAgentPicker');
+  if(!picker) return;
+
+  function setActive(btn){
+    picker.querySelectorAll('.agent-pick-btn').forEach(b=> b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  const noneBtn = document.createElement('button');
+  noneBtn.type = 'button';
+  noneBtn.className = 'agent-pick-btn none-btn active';
+  noneBtn.innerHTML = `<span>선택 안 함</span>`;
+  noneBtn.addEventListener('click', ()=>{ selectedAgent = ''; setActive(noneBtn); });
+  picker.appendChild(noneBtn);
+
+  ROLE_ORDER.forEach(role=>{
+    const agentsInRole = AGENT_LIST.filter(a=> AGENT_ROLE[a] === role).sort((a,b)=> a.localeCompare(b,'ko'));
+    agentsInRole.forEach(name=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'agent-pick-btn';
+      btn.innerHTML = `<img src="${agentIconUrl(name)}" alt="${name}" onerror="this.style.visibility='hidden'"><span>${name}</span>`;
+      btn.addEventListener('click', ()=>{ selectedAgent = name; setActive(btn); });
+      picker.appendChild(btn);
+    });
+  });
+})();
 
 const TIER_TIP_GROUPS = [
   { range:[0,2], label:'아이언~실버', tips:[
@@ -1796,6 +2009,201 @@ document.getElementById('agentTipReroll').addEventListener('click', renderAgentT
     wrap.style.display = 'none';
     landingScreen.style.display = 'flex';
     window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+
+/* ============ 루틴 저장 / 불러오기 (서버 저장 + 발급 코드 방식) ============ */
+// 같은 Vercel 프로젝트에 /api/routine 서버리스 함수를 추가해서 사용합니다.
+// (아래 안내에 따라 api/routine.js 파일과 Upstash Redis 연동이 필요해요)
+const ROUTINE_API_PROXY = 'https://proxy-1-lemon.vercel.app/api/routine';
+
+(function(){
+  const overlay = document.getElementById('routineModalOverlay');
+  const titleEl = document.getElementById('routineModalTitle');
+  const descEl = document.getElementById('routineModalDesc');
+  const inputEl = document.getElementById('routineModalInput');
+  const codeDisplay = document.getElementById('routineModalCodeDisplay');
+  const codeValueEl = document.getElementById('routineModalCodeValue');
+  const copyBtn = document.getElementById('routineModalCopyBtn');
+  const errorEl = document.getElementById('routineModalError');
+  const cancelBtn = document.getElementById('routineModalCancel');
+  const confirmBtn = document.getElementById('routineModalConfirm');
+  const saveRoutineBtn = document.getElementById('saveRoutineBtn');
+  const loadRoutineBtn = document.getElementById('loadRoutineBtn');
+
+  let currentConfirmAction = null;
+
+  function resetModalUI(){
+    inputEl.value = '';
+    inputEl.style.display = 'block';
+    codeDisplay.style.display = 'none';
+    errorEl.style.color = 'var(--red)';
+    errorEl.textContent = '';
+    cancelBtn.style.display = 'inline-block';
+    confirmBtn.style.display = 'inline-block';
+    confirmBtn.disabled = false;
+  }
+
+  function openModal(){
+    overlay.style.display = 'flex';
+  }
+
+  function closeModal(){
+    overlay.style.display = 'none';
+  }
+
+  function showError(msg){
+    errorEl.style.color = 'var(--red)';
+    errorEl.textContent = msg;
+  }
+
+  function restoreAgentSelection(name){
+    selectedAgent = name || '';
+    const picker = document.getElementById('mainAgentPicker');
+    if(!picker) return;
+    picker.querySelectorAll('.agent-pick-btn').forEach(b=>{
+      const span = b.querySelector('span');
+      const label = span ? span.textContent : '';
+      const isMatch = (selectedAgent === '' && b.classList.contains('none-btn')) || label === selectedAgent;
+      b.classList.toggle('active', isMatch);
+    });
+  }
+
+  function applyLoadedRoutine(data){
+    const navBtn1 = document.getElementById('navBtn1');
+    if(navBtn1) navBtn1.click();
+
+    currentInput.value = data.currentTier || '';
+    currentInput.dispatchEvent(new Event('input'));
+
+    if(!isRadiantMode && data.targetTierValue !== undefined && data.targetTierValue !== ''){
+      targetSelect.value = data.targetTierValue;
+      targetSelect.dispatchEvent(new Event('change'));
+    }
+
+    restoreAgentSelection(data.selectedAgent);
+
+    const routinesOut = document.getElementById('routines-out');
+    const routinesDesc = document.getElementById('routines-desc');
+    if(routinesOut){
+      routinesOut.innerHTML = data.routinesHTML || '';
+      routinesOut.style.display = 'block';
+    }
+    if(routinesDesc && data.routinesDesc) routinesDesc.textContent = data.routinesDesc;
+    if(data.regenerateVisible) regenerateBtn.style.display = 'inline-block';
+
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  /* ---------- 저장 흐름 ---------- */
+  async function doSave(){
+    const data = {
+      currentTier: currentInput.value,
+      targetTierValue: targetSelect.value,
+      selectedAgent: selectedAgent,
+      isRadiantMode: isRadiantMode,
+      routinesHTML: document.getElementById('routines-out').innerHTML,
+      routinesDesc: document.getElementById('routines-desc').textContent,
+      regenerateVisible: regenerateBtn.style.display !== 'none',
+      savedAt: Date.now()
+    };
+
+    resetModalUI();
+    titleEl.textContent = '루틴 저장하기';
+    descEl.textContent = '루틴을 서버에 저장하고 있어요...';
+    inputEl.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    confirmBtn.style.display = 'none';
+    openModal();
+
+    try{
+      const res = await fetch(ROUTINE_API_PROXY, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ data })
+      });
+      const json = await res.json().catch(()=> ({}));
+      if(!res.ok || !json.code) throw new Error(json.error || 'SAVE_FAILED');
+
+      descEl.textContent = '아래 코드를 꼭 저장해두세요! 이 코드가 있어야 나중에 루틴을 다시 불러올 수 있어요. (다른 사람에게 알려주면 그 사람도 불러올 수 있으니 주의하세요)';
+      codeValueEl.textContent = json.code;
+      codeDisplay.style.display = 'block';
+      confirmBtn.style.display = 'inline-block';
+      confirmBtn.textContent = '닫기';
+      currentConfirmAction = closeModal;
+    } catch(e){
+      descEl.textContent = '';
+      showError('저장에 실패했어요. 잠시 후 다시 시도해주세요.');
+      confirmBtn.style.display = 'inline-block';
+      confirmBtn.textContent = '닫기';
+      currentConfirmAction = closeModal;
+    }
+  }
+
+  /* ---------- 불러오기 흐름 ---------- */
+  function openLoadModal(){
+    resetModalUI();
+    titleEl.textContent = '내 루틴 불러오기';
+    descEl.textContent = '저장할 때 받았던 코드를 입력하세요.';
+    confirmBtn.textContent = '불러오기';
+    currentConfirmAction = doLoad;
+    openModal();
+    setTimeout(()=> inputEl.focus(), 30);
+  }
+
+  async function doLoad(){
+    const code = inputEl.value.trim().toUpperCase();
+    if(!code){
+      showError('코드를 입력해주세요.');
+      return;
+    }
+    errorEl.textContent = '';
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '불러오는 중...';
+
+    try{
+      const res = await fetch(`${ROUTINE_API_PROXY}?code=${encodeURIComponent(code)}`);
+      if(res.status === 404){
+        throw new Error('NOT_FOUND');
+      }
+      const json = await res.json().catch(()=> ({}));
+      if(!res.ok || !json.data) throw new Error('LOAD_FAILED');
+      applyLoadedRoutine(json.data);
+      closeModal();
+    } catch(e){
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = '불러오기';
+      if(e.message === 'NOT_FOUND') showError('존재하지 않는 코드입니다.');
+      else showError('불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    }
+  }
+
+  saveRoutineBtn.addEventListener('click', ()=>{
+    const out = document.getElementById('routines-out');
+    if(!out || !out.innerHTML.trim()){
+      alert('먼저 위에서 에임 루틴을 생성한 뒤 저장해주세요!');
+      return;
+    }
+    doSave();
+  });
+
+  loadRoutineBtn.addEventListener('click', openLoadModal);
+  cancelBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+  inputEl.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && currentConfirmAction) currentConfirmAction(); });
+  confirmBtn.addEventListener('click', ()=>{ if(currentConfirmAction) currentConfirmAction(); });
+
+  copyBtn.addEventListener('click', ()=>{
+    const code = codeValueEl.textContent;
+    const done = ()=>{
+      copyBtn.textContent = '복사됨!';
+      setTimeout(()=> copyBtn.textContent = '코드 복사하기', 1200);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(done).catch(done);
+    } else {
+      done();
+    }
   });
 })();
 </script>
